@@ -99,19 +99,14 @@
       when: item in available_dotfiles
       notify: Restore dotfiles
 
-    - name: Pull fzf bash completion script
+    - name: Pull fzf bash scripts
       command:
         cmd: >
-          curl -fLo /usr/share/fzf/shell/completion.bash --create-dirs
-          https://raw.githubusercontent.com/junegunn/fzf/refs/heads/master/shell/completion.bash
-      when: "'bash' in dotfiles"
-      become: true
-
-    - name: Pull fzf bash keybindings script
-      command:
-        cmd: >
-          curl -fLo /usr/share/fzf/shell/key-bindings.bash --create-dirs
-          https://raw.githubusercontent.com/junegunn/fzf/refs/heads/master/shell/key-bindings.bash
+          curl -fLo /usr/share/fzf/shell/{{ item }}.bash --create-dirs
+          https://raw.githubusercontent.com/junegunn/fzf/refs/heads/master/shell/{{ item }}.bash
+      loop:
+        - completion
+        - key-bindings
       when: "'bash' in dotfiles"
       become: true
 
