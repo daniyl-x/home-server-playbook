@@ -29,13 +29,7 @@
       loop:
         - PasswordAuthentication
         - PermitRootLogin
-      register: sshd_config
-
-    - name: Restart SSH server
-      service:
-        name: sshd
-        state: restarted
-      when: sshd_config.changed
+      notify: Restart SSH server
 
     - name: Enable current user lingering
       file:
@@ -48,9 +42,14 @@
       sysctl:
         name: vm.swappiness
         value: 10
-      register: reboot_required
+      notify: Reboot
+
+  handlers:
+    - name: Restart SSH server
+      service:
+        name: sshd
+        state: restarted
 
     - name: Reboot
       reboot:
-      when: reboot_required.changed
 
