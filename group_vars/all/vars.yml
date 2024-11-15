@@ -1,0 +1,10 @@
+# Copyright (c) 2024 daniyl-x
+# Licensed under BSD-1-Clause License.
+
+
+packages:
+  - git
+  - vim
+  - tmux
+  - fzf
+

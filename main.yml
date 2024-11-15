@@ -2,7 +2,7 @@
 # Licensed under BSD-1-Clause License.
 
 
-- name: Update packages
+- name: Manage packages
   hosts: all
   become: true
 
@@ -13,6 +13,13 @@
         state: latest
         update_cache: true
         cache_valid_time: 3600
+      when: ansible_facts["os_family"] == "Debian"
+
+    - name: Install apt packages
+      apt:
+        name: "{{ item }}"
+        state: present
+      loop: "{{ packages }}"
       when: ansible_facts["os_family"] == "Debian"
 
 
@@ -52,23 +59,4 @@
 
     - name: Reboot
       reboot:
-
-
-- name: Install packages
-  hosts: all
-  become: true
-
-  vars:
-    packages:
-      - git
-      - vim
-      - tmux
-      - fzf
-
-  tasks:
-    - name: Install apt packages
-      apt:
-        name: "{{ item }}"
-        state: present
-      loop: "{{ packages }}"
 
