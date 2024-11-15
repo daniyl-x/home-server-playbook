@@ -5,6 +5,7 @@
 packages:
   - git
   - stow
+  - curl
   - vim
   - tmux
   - fzf
