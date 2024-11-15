@@ -23,9 +23,9 @@
   tasks:
     - name: Disable SSH server options
       replace:
-        path: /etc/ssh/ssh_config
-        regexp: "^({{ option }} (?!no)|#{{ option }}).*"
-        replace: "{{ option }} no"
+        path: /etc/ssh/sshd_config
+        regexp: "^({{ item }} (?!no)|#{{ item }}).*"
+        replace: "{{ item }} no"
       loop:
         - PasswordAuthentication
         - PermitRootLogin
