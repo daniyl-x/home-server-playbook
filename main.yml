@@ -21,18 +21,14 @@
   become: true
 
   tasks:
-    - name: Disable SSH password authentication
+    - name: Disable SSH server options
       replace:
         path: /etc/ssh/ssh_config
-        regexp: "^#?PasswordAuthentication.*"
-        replace: "PasswordAuthentication no"
-      register: sshd_config
-
-    - name: Disable SSH root login
-      replace:
-        path: /etc/ssh/ssh_config
-        regexp: "^#?PermitRootLogin.*"
-        replace: "PermitRootLogin no"
+        regexp: "^({{ option }} (?!no)|#{{ option }}).*"
+        replace: "{{ option }} no"
+      loop:
+        - PasswordAuthentication
+        - PermitRootLogin
       register: sshd_config
 
     - name: Restart SSH server
