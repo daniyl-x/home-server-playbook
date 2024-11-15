@@ -15,3 +15,36 @@
         cache_valid_time: 3600
       when: ansible_facts["os_family"] == "Debian"
 
+
+- name: Configure system
+  hosts: all
+  become: true
+
+  tasks:
+    - name: Disable SSH password authentication
+      replace:
+        path: /etc/ssh/ssh_config
+        regexp: "^#?PasswordAuthentication.*"
+        replace: "PasswordAuthentication no"
+      register: sshd_config
+
+    - name: Disable SSH root login
+      replace:
+        path: /etc/ssh/ssh_config
+        regexp: "^#?PermitRootLogin.*"
+        replace: "PermitRootLogin no"
+      register: sshd_config
+
+    - name: Restart SSH server
+      service:
+        name: sshd
+        state: restarted
+      when: sshd_config.changed
+
+    - name: Enable current user lingering
+      file:
+        path: "/var/lib/systemd/linger/{{ ansible_user }}"
+        state: touch
+        modification_time: preserve
+        access_time: preserve
+
