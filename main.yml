@@ -93,10 +93,11 @@
 
     - name: Install dotfiles with GNU Stow
       command:
-        cmd: "stow -t /home/{{ ansible_user }} {{ item }}"
+        cmd: "stow -t /home/{{ ansible_user }} --adopt {{ item }}"
         chdir: "/home/{{ ansible_user }}/dotfiles"
       loop: "{{ dotfiles }}"
       when: item in available_dotfiles
+      notify: Restore dotfiles
 
     - name: Pull Vim Plug
       command:
@@ -109,4 +110,10 @@
     - name: Install Vim plugins
       shell: "vim +PlugUpdate +PlugClean +qall > /dev/null"
       when: "'vim' in dotfiles"
+
+  handlers:
+    - name: Restore dotfiles
+      command:
+        cmd: "git restore ."
+        chdir: "/home/{{ ansible_user }}/dotfiles"
 
