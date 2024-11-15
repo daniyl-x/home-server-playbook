@@ -44,3 +44,13 @@
         modification_time: preserve
         access_time: preserve
 
+    - name: Reduce swappiness
+      sysctl:
+        name: vm.swappiness
+        value: 10
+      register: reboot_required
+
+    - name: Reboot
+      reboot:
+      when: reboot_required.changed
+
