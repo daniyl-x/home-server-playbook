@@ -4,7 +4,12 @@
 
 packages:
   - git
+  - stow
   - vim
   - tmux
   - fzf
+
+dotfiles:
+  - vim
+  - tmux
 
