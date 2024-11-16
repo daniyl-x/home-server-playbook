@@ -89,20 +89,13 @@
           {{ available_dotfiles.files | map(attribute='path')
           | map('basename') | list }}"
 
-    - name: Create ~/.config directory
-      file:
-        path: "/home/{{ ansible_user }}/.config"
-        state: directory
-        modification_time: preserve
-        access_time: preserve
-
-    - name: Install dotfiles with GNU Stow
-      command:
-        cmd: "stow -t /home/{{ ansible_user }} --adopt {{ item }}"
-        chdir: "/home/{{ ansible_user }}/dotfiles"
+    - name: Copy dotfiles to ~/
+      synchronize:
+        src: "/home/{{ ansible_user }}/dotfiles/{{ item }}/"
+        dest: "/home/{{ ansible_user }}"
       loop: "{{ dotfiles }}"
+      delegate_to: "{{ inventory_hostname }}"
       when: item in available_dotfiles
-      notify: Restore dotfiles
 
     - name: Copy get_fzf_tag.awk to the target
       copy:
@@ -156,10 +149,4 @@
     - name: Update and clean Vim plugins
       shell: "vim -s ~/.vimrc +PlugUpdate +PlugClean +qa"
       when: "'vim' in dotfiles"
-
-  handlers:
-    - name: Restore dotfiles
-      command:
-        cmd: "git restore ."
-        chdir: "/home/{{ ansible_user }}/dotfiles"
 
