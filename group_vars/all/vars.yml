@@ -1,6 +1,4 @@
 packages:
-  - rsync   # Required to copy dotfiles
-  - git
   - curl
   - vim
   - tmux

@@ -6,6 +6,11 @@
   hosts: all
   become: true
 
+  vars:
+    required_packages:
+      - git
+      - rsync
+
   tasks:
     - name: Update apt packages
       apt:
@@ -19,7 +24,7 @@
       apt:
         name: "{{ item }}"
         state: present
-      loop: "{{ packages }}"
+      loop: "{{ packages + required_packages }}"
       when: ansible_facts["os_family"] == "Debian"
 
 
