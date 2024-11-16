@@ -12,20 +12,22 @@
       - rsync
 
   tasks:
-    - name: Update apt packages
+    - name: Update apt cache
       apt:
-        name: "*"
-        state: latest
         update_cache: true
         cache_valid_time: 3600
       when: ansible_facts["os_family"] == "Debian"
 
-    - name: Install apt packages
-      apt:
+    - name: Update packages
+      package:
+        name: "*"
+        state: latest
+
+    - name: Install packages
+      package:
         name: "{{ item }}"
         state: present
       loop: "{{ packages + required_packages }}"
-      when: ansible_facts["os_family"] == "Debian"
 
 
 - name: Configure system
