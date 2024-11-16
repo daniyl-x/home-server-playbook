@@ -67,7 +67,7 @@
   vars:
     dotfiles_dir: "{{ ansible_user_dir }}/dotfiles"
 
-  tasks:
+  pre_tasks:
     - name: Pull dotfiles
       git:
         repo: "https://github.com/daniyl-x/dotfiles"
@@ -95,75 +95,10 @@
       delegate_to: "{{ inventory_hostname }}"
       when: item in available_dotfiles
 
-
-- name: Bash dotfiles post-install
-  hosts: all
-
-  vars:
-    fzf_scripts:
-      - completion
-      - key-bindings
-
-  tasks:
-    - name: Copy get_fzf_tag.awk to the target
-      copy:
-        src: get_fzf_tag.awk
-        dest: /tmp/get_fzf_tag.awk
-        mode: 0400
+  roles:
+    - role: bash_dotfiles
       when: "'bash' in dotfiles"
 
-    - name: Get fzf tag
-      shell: "awk -f /tmp/get_fzf_tag.awk"
-      register: fzf_tag
-      when: "'bash' in dotfiles"
-
-    - name: Store fzf tag
-      set_fact:
-        fzf_tag: "{{ fzf_tag.stdout }}"
-      when: "'bash' in dotfiles"
-
-    - name: Create fzf scripts directory
-      file:
-        path: /usr/share/fzf/shell
-        state: directory
-        mode: a+rx
-        modification_time: preserve
-        access_time: preserve
-      when: "'bash' in dotfiles"
-      become: true
-
-    - name: Pull fzf bash scripts
-      get_url:
-        url: "https://raw.githubusercontent.com/junegunn/fzf/refs/tags/{{ fzf_tag }}/shell/{{ item }}.bash"
-        dest: "/usr/share/fzf/shell/{{ item }}.bash"
-        mode: a+rx
-      loop: "{{ fzf_scripts }}"
-      when: "'bash' in dotfiles"
-      become: true
-
-
-- name: Vim dotfiles post-install
-  hosts: all
-
-  vars:
-    vim_autoload_dir: "{{ ansible_user_dir }}/.vim/autoload"
-
-  tasks:
-    - name: Create ~/.vim/autoload directory
-      file:
-        path: "{{ vim_autoload_dir }}"
-        state: directory
-        modification_time: preserve
-        access_time: preserve
-      when: "'vim' in dotfiles"
-
-    - name: Pull Vim Plug
-      get_url:
-        url: "https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim"
-        dest: "{{ vim_autoload_dir }}/plug.vim"
-      when: "'vim' in dotfiles"
-
-    - name: Update and clean Vim plugins
-      shell: "vim -s ~/.vimrc +PlugUpdate +PlugClean +qa"
+    - role: vim_dotfiles
       when: "'vim' in dotfiles"
 

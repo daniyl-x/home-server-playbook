@@ -1,0 +1,4 @@
+fzf_scripts:
+  - completion
+  - key-bindings
+

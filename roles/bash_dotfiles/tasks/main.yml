@@ -1,0 +1,35 @@
+# Copyright (c) 2024 daniyl-x
+# Licensed under BSD-1-Clause License.
+
+
+- name: Copy get_fzf_tag.awk to the target
+  copy:
+    src: get_fzf_tag.awk
+    dest: /tmp/get_fzf_tag.awk
+    mode: 0400
+
+- name: Get fzf tag
+  shell: "awk -f /tmp/get_fzf_tag.awk"
+  register: fzf_tag
+
+- name: Store fzf tag
+  set_fact:
+    fzf_tag: "{{ fzf_tag.stdout }}"
+
+- name: Create fzf scripts directory
+  file:
+    path: /usr/share/fzf/shell
+    state: directory
+    mode: a+rx
+    modification_time: preserve
+    access_time: preserve
+  become: true
+
+- name: Pull fzf bash scripts
+  get_url:
+    url: "https://raw.githubusercontent.com/junegunn/fzf/refs/tags/{{ fzf_tag }}/shell/{{ item }}.bash"
+    dest: "/usr/share/fzf/shell/{{ item }}.bash"
+    mode: a+rx
+  loop: "{{ fzf_scripts }}"
+  become: true
+
