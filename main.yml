@@ -104,11 +104,17 @@
       when: item in available_dotfiles
       notify: Restore dotfiles
 
+    - name: Copy get_fzf_tag.awk to the target
+      copy:
+        src: get_fzf_tag.awk
+        dest: /tmp/get_fzf_tag.awk
+        mode: 0400
+
     - name: Pull fzf bash scripts
-      command:
+      shell:
         cmd: >
           curl -fLo /usr/share/fzf/shell/{{ item }}.bash --create-dirs
-          https://raw.githubusercontent.com/junegunn/fzf/refs/heads/master/shell/{{ item }}.bash
+          "https://raw.githubusercontent.com/junegunn/fzf/refs/tags/$(awk -f /tmp/get_fzf_tag.awk)/shell/{{ item }}.bash"
       loop: "{{ fzf_scripts }}"
       when: "'bash' in dotfiles"
       notify: Chmod fzf scripts
