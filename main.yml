@@ -64,6 +64,11 @@
 - name: Install dotfiles
   hosts: all
 
+  vars:
+    fzf_scripts:
+      - completion
+      - key-bindings
+
   tasks:
     - name: Pull dotfiles
       git:
@@ -104,10 +109,9 @@
         cmd: >
           curl -fLo /usr/share/fzf/shell/{{ item }}.bash --create-dirs
           https://raw.githubusercontent.com/junegunn/fzf/refs/heads/master/shell/{{ item }}.bash
-      loop:
-        - completion
-        - key-bindings
+      loop: "{{ fzf_scripts }}"
       when: "'bash' in dotfiles"
+      notify: Chmod fzf scripts
       become: true
 
     - name: Pull Vim Plug
@@ -127,4 +131,11 @@
       command:
         cmd: "git restore ."
         chdir: "/home/{{ ansible_user }}/dotfiles"
+
+    - name: Chmod fzf scripts
+      file:
+        dest: "/usr/share/fzf/shell"
+        mode: a+rx
+        recurse: true
+      become: true
 
