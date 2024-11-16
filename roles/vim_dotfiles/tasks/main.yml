@@ -2,6 +2,11 @@
 # Licensed under BSD-1-Clause License.
 
 
+- name: Install Vim
+  package:
+    name: vim
+    state: present
+
 - name: Create ~/.vim/autoload directory
   file:
     path: "{{ vim_autoload_dir }}"
