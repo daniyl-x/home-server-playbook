@@ -64,11 +64,6 @@
 - name: Install dotfiles
   hosts: all
 
-  vars:
-    fzf_scripts:
-      - completion
-      - key-bindings
-
   tasks:
     - name: Pull dotfiles
       git:
@@ -97,6 +92,16 @@
       delegate_to: "{{ inventory_hostname }}"
       when: item in available_dotfiles
 
+
+- name: Bash dotfiles post-install
+  hosts: all
+
+  vars:
+    fzf_scripts:
+      - completion
+      - key-bindings
+
+  tasks:
     - name: Copy get_fzf_tag.awk to the target
       copy:
         src: get_fzf_tag.awk
@@ -133,12 +138,18 @@
       when: "'bash' in dotfiles"
       become: true
 
+
+- name: Vim dotfiles post-install
+  hosts: all
+
+  tasks:
     - name: Create ~/.vim/autoload directory
       file:
         path: "/home/{{ ansible_user }}/.vim/autoload"
         state: directory
         modification_time: preserve
         access_time: preserve
+      when: "'vim' in dotfiles"
 
     - name: Pull Vim Plug
       get_url:
