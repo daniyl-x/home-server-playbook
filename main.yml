@@ -129,7 +129,7 @@
       when: "'vim' in dotfiles"
 
     - name: Install Vim plugins
-      shell: "vim +PlugUpdate +PlugClean +qall > /dev/null"
+      shell: "vim -s ~/.vimrc +PlugUpdate +PlugClean +qa"
       when: "'vim' in dotfiles"
 
   handlers:
