@@ -64,15 +64,18 @@
 - name: Install dotfiles
   hosts: all
 
+  vars:
+    dotfiles_dir: "{{ ansible_user_dir }}/dotfiles"
+
   tasks:
     - name: Pull dotfiles
       git:
         repo: "https://github.com/daniyl-x/dotfiles"
-        dest: "/home/{{ ansible_user }}/dotfiles"
+        dest: "{{ dotfiles_dir }}"
 
     - name: Enumerate dotfiles directories
       find:
-        paths: "/home/{{ ansible_user }}/dotfiles"
+        paths: "{{ dotfiles_dir }}"
         file_type: directory
         # This parameter uses globs, not regex
         excludes: ".*"
@@ -86,8 +89,8 @@
 
     - name: Copy dotfiles to ~/
       synchronize:
-        src: "/home/{{ ansible_user }}/dotfiles/{{ item }}/"
-        dest: "/home/{{ ansible_user }}"
+        src: "{{ dotfiles_dir }}/{{ item }}/"
+        dest: "{{ ansible_user_dir }}"
       loop: "{{ dotfiles }}"
       delegate_to: "{{ inventory_hostname }}"
       when: item in available_dotfiles
@@ -142,10 +145,13 @@
 - name: Vim dotfiles post-install
   hosts: all
 
+  vars:
+    vim_autoload_dir: "{{ ansible_user_dir }}/.vim/autoload"
+
   tasks:
     - name: Create ~/.vim/autoload directory
       file:
-        path: "/home/{{ ansible_user }}/.vim/autoload"
+        path: "{{ vim_autoload_dir }}"
         state: directory
         modification_time: preserve
         access_time: preserve
@@ -153,8 +159,8 @@
 
     - name: Pull Vim Plug
       get_url:
-        url: https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
-        dest: "/home/{{ ansible_user }}/.vim/autoload/plug.vim"
+        url: "https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim"
+        dest: "{{ vim_autoload_dir }}/plug.vim"
       when: "'vim' in dotfiles"
 
     - name: Update and clean Vim plugins
