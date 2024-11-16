@@ -9,6 +9,7 @@ packages:
   - vim
   - tmux
   - fzf
+  - tree
 
 dotfiles:
   - bash
