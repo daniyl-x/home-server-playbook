@@ -109,15 +109,35 @@
         src: get_fzf_tag.awk
         dest: /tmp/get_fzf_tag.awk
         mode: 0400
+      when: "'bash' in dotfiles"
+
+    - name: Get fzf tag
+      shell: "awk -f /tmp/get_fzf_tag.awk"
+      register: fzf_tag
+      when: "'bash' in dotfiles"
+
+    - name: Store fzf tag
+      set_fact:
+        fzf_tag: "{{ fzf_tag.stdout }}"
+      when: "'bash' in dotfiles"
+
+    - name: Create fzf scripts directory
+      file:
+        path: /usr/share/fzf/shell
+        state: directory
+        mode: a+rx
+        modification_time: preserve
+        access_time: preserve
+      when: "'bash' in dotfiles"
+      become: true
 
     - name: Pull fzf bash scripts
-      shell:
-        cmd: >
-          curl -fLo /usr/share/fzf/shell/{{ item }}.bash --create-dirs
-          "https://raw.githubusercontent.com/junegunn/fzf/refs/tags/$(awk -f /tmp/get_fzf_tag.awk)/shell/{{ item }}.bash"
+      get_url:
+        url: "https://raw.githubusercontent.com/junegunn/fzf/refs/tags/{{ fzf_tag }}/shell/{{ item }}.bash"
+        dest: "/usr/share/fzf/shell/{{ item }}.bash"
+        mode: a+rx
       loop: "{{ fzf_scripts }}"
       when: "'bash' in dotfiles"
-      notify: Chmod fzf scripts
       become: true
 
     - name: Pull Vim Plug
@@ -137,11 +157,4 @@
       command:
         cmd: "git restore ."
         chdir: "/home/{{ ansible_user }}/dotfiles"
-
-    - name: Chmod fzf scripts
-      file:
-        dest: "/usr/share/fzf/shell"
-        mode: a+rx
-        recurse: true
-      become: true
 
