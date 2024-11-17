@@ -9,7 +9,6 @@
   vars:
     required_packages:
       - git
-      - rsync
 
   tasks:
     - name: Update apt cache
