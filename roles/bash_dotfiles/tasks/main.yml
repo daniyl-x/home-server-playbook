@@ -2,6 +2,12 @@
 # Licensed under BSD-1-Clause License.
 
 
+- name: Set PS1
+  replace:
+    path: "{{ ansible_user_dir }}/.bashrc"
+    regexp: '^export PS1=(?!"\$ONE_LINE_PS1").*'
+    replace: 'export PS1="$ONE_LINE_PS1"'
+
 - name: Copy get_fzf_tag.awk to the target
   copy:
     src: get_fzf_tag.awk
