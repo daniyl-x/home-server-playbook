@@ -20,11 +20,12 @@
   when: "'nvim' not in packages"
 
 - name: Set vim as VISUAL
-  replace:
+  lineinfile:
     path: "{{ bashrc }}"
     regexp: |
       ^export VISUAL=(?![\"\']?vim[\"\']?).*
-    replace: "export VISUAL=vim\n"
+    line: "export VISUAL=vim"
+    insertbefore: "^export EDITOR.*"
   when:
     - "'nvim' not in packages"
     - "'vim' in packages"
