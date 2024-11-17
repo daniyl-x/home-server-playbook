@@ -110,8 +110,12 @@
 
   roles:
     - role: bash_dotfiles
-      when: "'bash' in dotfiles"
+      when:
+        - "'bash' in dotfiles"
+        - "'bash' in available_dotfiles"
 
     - role: vim_dotfiles
-      when: "'vim' in dotfiles"
+      when:
+        - "'vim' in dotfiles"
+        - "'vim' in available_dotfiles"
 
