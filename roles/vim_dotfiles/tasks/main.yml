@@ -21,4 +21,5 @@
 
 - name: Update and clean Vim plugins
   shell: "vim -s ~/.vimrc +PlugUpdate +PlugClean +qa"
+  changed_when: false
 

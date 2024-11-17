@@ -102,11 +102,11 @@
           | map('basename') | list }}"
 
     - name: Copy dotfiles to ~/
-      synchronize:
+      copy:
         src: "{{ dotfiles_dir }}/{{ item }}/"
         dest: "{{ ansible_user_dir }}"
+        remote_src: true
       loop: "{{ dotfiles }}"
-      delegate_to: "{{ inventory_hostname }}"
       when: item in available_dotfiles
 
   roles:

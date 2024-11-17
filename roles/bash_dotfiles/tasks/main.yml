@@ -2,41 +2,6 @@
 # Licensed under BSD-1-Clause License.
 
 
-- name: Remove nvim MANPAGER
-  lineinfile:
-    path: "{{ bashrc }}"
-    # Block is used to workaround quotes issue
-    regexp: |
-      ^export MANPAGER=["']?nvim \+Man!["']?.*
-    state: absent
-  when: "'nvim' not in packages"
-
-- name: Remove nvim VISUAL
-  lineinfile:
-    path: "{{ bashrc }}"
-    regexp: |
-      ^export VISUAL=["']?nvim["']?.*
-    state: absent
-  when: "'nvim' not in packages"
-
-- name: Set vim as VISUAL
-  lineinfile:
-    path: "{{ bashrc }}"
-    regexp: |
-      ^export VISUAL=(?![\"\']?vim[\"\']?).*
-    line: "export VISUAL=vim"
-    insertbefore: "^export EDITOR.*"
-  when:
-    - "'nvim' not in packages"
-    - "'vim' in packages"
-
-- name: Set PS1
-  replace:
-    path: "{{ bashrc }}"
-    regexp: |
-      ^export PS1=(?!["']?\$ONE_LINE_PS1["']?).*
-    replace: "export PS1=\"$ONE_LINE_PS1\"\n"
-
 - name: Copy get_fzf_tag.awk to the target
   copy:
     src: get_fzf_tag.awk
@@ -46,6 +11,7 @@
 - name: Get fzf tag
   shell: "awk -f /tmp/get_fzf_tag.awk"
   register: fzf_tag
+  changed_when: false
 
 - name: Store fzf tag
   set_fact:
