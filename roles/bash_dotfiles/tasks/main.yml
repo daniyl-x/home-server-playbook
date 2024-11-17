@@ -4,14 +4,14 @@
 
 - name: Remove nvim MANPAGER
   lineinfile:
-    path: "{{ ansible_user_dir }}/.bashrc"
+    path: "{{ bashrc }}"
     regexp: '^export MANPAGER="nvim \+Man!"'
     state: absent
   when: '"nvim" not in packages'
 
 - name: Remove nvim VISUAL
   lineinfile:
-    path: "{{ ansible_user_dir }}/.bashrc"
+    path: "{{ bashrc }}"
     # Block is used to workaround quotes issue
     regexp: |
       ^export VISUAL=[\"\']?nvim[\"\']?
@@ -20,7 +20,7 @@
 
 - name: Set vim as VISUAL
   replace:
-    path: "{{ ansible_user_dir }}/.bashrc"
+    path: "{{ bashrc }}"
     regexp: |
       ^export VISUAL=(?![\"\']?vim[\"\']?).*
     replace: "export VISUAL=vim\n"
@@ -30,7 +30,7 @@
 
 - name: Set PS1
   replace:
-    path: "{{ ansible_user_dir }}/.bashrc"
+    path: "{{ bashrc }}"
     regexp: '^export PS1=(?!"\$ONE_LINE_PS1").*'
     replace: 'export PS1="$ONE_LINE_PS1"'
 

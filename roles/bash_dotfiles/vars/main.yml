@@ -1,3 +1,5 @@
+bashrc: "{{ ansible_user_dir }}/.bashrc"
+
 fzf_scripts:
   - completion
   - key-bindings
