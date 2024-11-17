@@ -29,6 +29,13 @@
         state: present
       loop: "{{ packages + required_packages }}"
 
+    - name: Get out!
+      package:
+        name: "{{ item }}"
+        state: absent
+      loop:
+        - nano
+
 
 - name: Configure system
   hosts: all
