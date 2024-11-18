@@ -86,7 +86,7 @@
         repo: "https://github.com/daniyl-x/dotfiles"
         dest: "{{ dotfiles_dir }}"
 
-    - name: Enumerate dotfiles directories
+    - name: Enumerate available dotfiles directories
       find:
         paths: "{{ dotfiles_dir }}"
         file_type: directory
@@ -94,11 +94,17 @@
         excludes: ".*"
       register: available_dotfiles
 
-    - name: Process and store available dotfiles
+    - name: Process available dotfiles names
       set_fact:
         available_dotfiles: >
-          {{ available_dotfiles.files | map(attribute='path')
-          | map('basename') | list }}"
+          {{ available_dotfiles.files | map(attribute="path")
+          | map("basename") }}
+
+    - name: Identify dotfiles to install
+      set_fact:
+        dotfiles: "{{ dotfiles | default([]) + [item] }}"
+      loop: "{{ packages }}"
+      when: item in available_dotfiles
 
     - name: Copy dotfiles to ~/
       copy:
@@ -106,16 +112,11 @@
         dest: "{{ ansible_user_dir }}"
         remote_src: true
       loop: "{{ dotfiles }}"
-      when: item in available_dotfiles
 
   roles:
     - role: bash_dotfiles
-      when:
-        - "'bash' in dotfiles"
-        - "'bash' in available_dotfiles"
+      when: "'bash' in dotfiles"
 
     - role: vim_dotfiles
-      when:
-        - "'vim' in dotfiles"
-        - "'vim' in available_dotfiles"
+      when: "'vim' in dotfiles"
 

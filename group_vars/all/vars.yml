@@ -1,13 +1,9 @@
 packages:
+  - bash
   - curl
   - vim
   - tmux
   - fzf
   - tree
   - htop
-
-dotfiles:
-  - bash
-  - vim
-  - tmux
 

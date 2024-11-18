@@ -2,11 +2,6 @@
 # Copyright (c) 2024, daniyl-x
 
 
-- name: Install Vim
-  package:
-    name: vim
-    state: present
-
 - name: Create ~/.vim/autoload directory
   file:
     path: "{{ vim_autoload_dir }}"
