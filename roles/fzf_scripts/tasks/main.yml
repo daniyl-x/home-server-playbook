@@ -19,18 +19,22 @@
 
 - name: Create fzf scripts directory
   file:
-    path: /usr/share/fzf/shell
+    path: "{{ fzf_scripts_dir }}"
     state: directory
     mode: a+rx
     modification_time: preserve
     access_time: preserve
   become: true
 
-- name: Pull fzf bash scripts
-  get_url:
-    url: "https://raw.githubusercontent.com/junegunn/fzf/refs/tags/{{ fzf_tag }}/shell/{{ item }}.bash"
-    dest: "/usr/share/fzf/shell/{{ item }}.bash"
+- name: Pull fzf scripts
+  uri:
+    url: "https://raw.githubusercontent.com/junegunn/fzf/refs/tags/{{ fzf_tag }}/shell/{{ item }}"
+    dest: "{{ fzf_scripts_dir }}/{{ item }}"
     mode: a+rx
-  loop: "{{ fzf_scripts }}"
+    follow_redirects: all
+    status_code: [200, 404]
+    creates: "{{ fzf_scripts_dir }}/{{ item }}"
+  # Combine scripts with shell extensions
+  loop: "{{ fzf_scripts | product(fzf_shells) | map('join', '.')}}"
   become: true
 

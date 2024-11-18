@@ -1,4 +1,11 @@
+fzf_scripts_dir: /usr/share/fzf/shell
+
 fzf_scripts:
   - completion
   - key-bindings
+
+fzf_shells:
+  - bash
+  - zsh
+  - fish
 
