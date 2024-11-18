@@ -114,9 +114,9 @@
       loop: "{{ dotfiles }}"
 
   roles:
-    - role: bash_dotfiles
-      when: "'bash' in dotfiles"
+    - role: fzf_scripts
+      when: "'fzf' in packages"
 
-    - role: vim_dotfiles
+    - role: vim_plugins
       when: "'vim' in dotfiles"
 
