@@ -1,9 +1,11 @@
 packages:
   - bash
   - curl
-  - vim
-  - tmux
   - fzf
-  - tree
   - htop
+  - iperf3
+  - lshw
+  - tmux
+  - tree
+  - vim
 
