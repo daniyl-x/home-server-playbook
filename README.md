@@ -8,6 +8,7 @@ and my [dotfiles](https://github.com/daniyl-x/dotfiles) are in place.
 ## Table of Contents
 - [Installation](#installation)
 - [Usage](#usage)
+- [Credits](#credits)
 - [License](#license)
 
 
@@ -22,6 +23,11 @@ and my [dotfiles](https://github.com/daniyl-x/dotfiles) are in place.
 ```sh
 ansible-playbook main.yml
 ```
+
+
+## Credits
+- Jeff Geerling for his [Ansible 101](https://youtube.com/playlist?list=PL2_OBreMn7FqZkvMYt6ATmgC0KAGGJNAN&si=vKYbmcI3s7CzXwhc)
+series
 
 
 ## License
