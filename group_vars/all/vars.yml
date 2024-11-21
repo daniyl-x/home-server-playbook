@@ -1,5 +1,6 @@
 packages:
   - bash
+  - cockpit
   - curl
   - fzf
   - htop

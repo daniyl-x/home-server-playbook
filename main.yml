@@ -120,3 +120,16 @@
     - role: vim_plugins
       when: "'vim' in dotfiles"
 
+
+- name: Configure services
+  hosts: all
+  become: true
+
+  tasks:
+    - name: Enable Cockpit
+      service:
+        name: cockpit
+        enabled: true
+        state: started
+      when: "'cockpit' in packages"
+
