@@ -2,7 +2,7 @@
 # Copyright (c) 2024, daniyl-x
 
 
-- name: Manage packages
+- name: Update system and manage packages
   hosts: all
   become: true
 
@@ -36,7 +36,7 @@
         - nano
 
 
-- name: Configure system
+- name: Apply basic configuration
   hosts: all
   become: true
 
@@ -72,6 +72,19 @@
 
     - name: Reboot
       reboot:
+
+
+- name: Configure additional services
+  hosts: all
+  become: true
+
+  tasks:
+    - name: Enable Cockpit
+      service:
+        name: cockpit
+        enabled: true
+        state: started
+      when: "'cockpit' in packages"
 
 
 - name: Install dotfiles
@@ -119,17 +132,4 @@
 
     - role: vim_plugins
       when: "'vim' in dotfiles"
-
-
-- name: Configure services
-  hosts: all
-  become: true
-
-  tasks:
-    - name: Enable Cockpit
-      service:
-        name: cockpit
-        enabled: true
-        state: started
-      when: "'cockpit' in packages"
 
