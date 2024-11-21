@@ -49,6 +49,7 @@
       loop:
         - PasswordAuthentication
         - PermitRootLogin
+        - KbdInteractiveAuthentication
       notify: Restart SSH server
 
     - name: Enable current user lingering
