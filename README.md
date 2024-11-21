@@ -1,8 +1,9 @@
 # Home Server Playbook
 This project automates deployment and provisioning of my home servers
-using Ansible.
-It ensures required software is installed, some configuration applied
-and my [dotfiles](https://github.com/daniyl-x/dotfiles) are in place.
+using Ansible. \
+It covers updates, software installation, basic configuration,
+required services and installs
+[my personal dotfiles](https://github.com/daniyl-x/dotfiles).
 
 
 ## Table of Contents
