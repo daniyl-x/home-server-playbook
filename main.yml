@@ -80,6 +80,13 @@
   become: true
 
   tasks:
+    - name: Enable iperf3
+      service:
+        name: iperf3
+        enabled: true
+        state: started
+      when: "'iperf3' in packages"
+
     - name: Enable Cockpit
       service:
         name: cockpit
