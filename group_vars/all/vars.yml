@@ -6,7 +6,9 @@ packages:
   - htop
   - iperf3
   - lshw
+  - nvme-cli
   - podman
+  - smartmontools
   - tmux
   - tree
   - vim
