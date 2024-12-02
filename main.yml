@@ -36,6 +36,23 @@
         - nano
 
 
+- name: Copy SSH key
+  hosts: all
+
+  tasks:
+    - name: Read public SSH key
+      slurp:
+        path: "{{ ansible_ssh_private_key_file }}.pub"
+      delegate_to: localhost
+      register: public_ssh_key
+
+    - name: Add the key to ~/.ssh/authorized_keys
+      lineinfile:
+        path: "{{ ansible_user_dir }}/.ssh/authorized_keys"
+        line: "{{ public_ssh_key.content | b64decode | trim }}"
+        create: true
+
+
 - name: Apply basic configuration
   hosts: all
   become: true
