@@ -6,6 +6,7 @@ packages:
   - htop
   - iperf3
   - lshw
+  - podman
   - tmux
   - tree
   - vim

@@ -75,9 +75,13 @@
       reboot:
 
 
-- name: Configure additional services
+- name: Configure additional software
   hosts: all
   become: true
+
+  roles:
+    - role: podman
+      when: "'podman' in packages"
 
   tasks:
     - name: Enable iperf3
@@ -93,6 +97,12 @@
         enabled: true
         state: started
       when: "'cockpit' in packages"
+
+    - name: Install Cockpit Podman plugin
+      package:
+        name: cockpit-podman
+        state: present
+      when: "'cockpit' in packages and 'podman' in packages"
 
 
 - name: Install dotfiles
