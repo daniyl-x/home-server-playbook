@@ -108,13 +108,6 @@
         state: started
       when: "'iperf3' in packages"
 
-    - name: Enable Cockpit
-      service:
-        name: cockpit
-        enabled: true
-        state: started
-      when: "'cockpit' in packages"
-
     - name: Install Cockpit Podman plugin
       package:
         name: cockpit-podman
