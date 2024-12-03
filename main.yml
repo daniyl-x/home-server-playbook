@@ -101,7 +101,7 @@
   become: true
 
   roles:
-    - role: podman
+    - role: podman_compose
       when: "'podman' in packages"
 
   tasks:
@@ -117,6 +117,38 @@
         name: cockpit-podman
         state: present
       when: "'cockpit' in packages and 'podman' in packages"
+
+
+- name: Get the latest container templates repository
+  hosts: all
+
+  vars:
+    containers_repo_dir: "{{ ansible_user_dir }}/containers"
+
+  tasks:
+    - name: Check if containers repo was cloned
+      stat:
+        path: "{{ containers_repo_dir }}/.git"
+      register: containers_clone
+
+    - name: Stash changes in containers repo clone
+      command:
+        cmd: git stash
+        chdir: "{{ containers_repo_dir }}"
+      register: containers_stash
+      changed_when: "'WIP' in containers_stash.stdout"
+      when: containers_clone.stat.exists
+
+    - name: Get the latest containers repo
+      git:
+        repo: https://github.com/daniyl-x/containers
+        dest: "{{ containers_repo_dir }}"
+
+    - name: Apply stashed changes onto containers repo clone
+      command:
+        cmd: git stash pop
+        chdir: "{{ containers_repo_dir }}"
+      when: containers_clone.stat.exists and containers_stash.changed
 
 
 - name: Install dotfiles
