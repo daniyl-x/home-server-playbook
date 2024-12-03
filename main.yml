@@ -124,6 +124,7 @@
 
   vars:
     containers_repo_dir: "{{ ansible_user_dir }}/containers"
+    containers_env_file: "{{ containers_repo_dir }}/.env"
 
   tasks:
     - name: Check if containers repo was cloned
@@ -149,6 +150,20 @@
         cmd: git stash pop
         chdir: "{{ containers_repo_dir }}"
       when: containers_clone.stat.exists and containers_stash.changed
+
+    - name: Get VOLUME_PREFIX from ~/containers/.env
+      shell: ". {{ containers_env_file }} && echo $VOLUME_PREFIX"
+      register: containers_volume_prefix
+      changed_when: false
+
+    - name: Create VOLUME_PREFIX directory
+      file:
+        path: "{{ containers_volume_prefix.stdout }}"
+        state: directory
+        owner: "{{ ansible_user }}"
+        modification_time: preserve
+        access_time: preserve
+      become: true
 
 
 - name: Install dotfiles
