@@ -36,10 +36,10 @@
         - nano
 
 
-- name: Copy SSH key
+- name: Configure SSH
   hosts: all
 
-  tasks:
+  pre_tasks:
     - name: Read public SSH key
       slurp:
         path: "{{ ansible_ssh_private_key_file }}.pub"
@@ -52,11 +52,6 @@
         line: "{{ public_ssh_key.content | b64decode | trim }}"
         create: true
 
-
-- name: Apply basic configuration
-  hosts: all
-  become: true
-
   tasks:
     - name: Disable SSH server options
       replace:
@@ -68,7 +63,21 @@
         - PermitRootLogin
         - KbdInteractiveAuthentication
       notify: Restart SSH server
+      become: true
 
+  handlers:
+    - name: Restart SSH server
+      service:
+        name: sshd
+        state: restarted
+      become: true
+
+
+- name: Apply basic configuration
+  hosts: all
+  become: true
+
+  tasks:
     - name: Enable current user lingering
       file:
         path: "/var/lib/systemd/linger/{{ ansible_user }}"
@@ -83,11 +92,6 @@
       notify: Reboot
 
   handlers:
-    - name: Restart SSH server
-      service:
-        name: sshd
-        state: restarted
-
     - name: Reboot
       reboot:
 
