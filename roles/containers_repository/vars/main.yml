@@ -1,0 +1,3 @@
+containers_repo_dir: "{{ ansible_user_dir }}/containers"
+containers_env_file: "{{ containers_repo_dir }}/.env"
+

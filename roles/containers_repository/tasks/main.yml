@@ -1,0 +1,42 @@
+# SPDX-License-Identifier: BSD-2-Clause
+# Copyright (c) 2024, daniyl-x
+
+
+- name: Check if containers repo was cloned
+  stat:
+    path: "{{ containers_repo_dir }}/.git"
+  register: containers_clone
+
+- name: Stash changes in containers repo clone
+  command:
+    cmd: git stash
+    chdir: "{{ containers_repo_dir }}"
+  register: containers_stash
+  changed_when: "'WIP' in containers_stash.stdout"
+  when: containers_clone.stat.exists
+
+- name: Get the latest containers repo
+  git:
+    repo: https://github.com/daniyl-x/containers
+    dest: "{{ containers_repo_dir }}"
+
+- name: Apply stashed changes onto containers repo clone
+  command:
+    cmd: git stash pop
+    chdir: "{{ containers_repo_dir }}"
+  when: containers_clone.stat.exists and containers_stash.changed
+
+- name: Get VOLUME_PREFIX from ~/containers/.env
+  shell: ". {{ containers_env_file }} && echo $VOLUME_PREFIX"
+  register: containers_volume_prefix
+  changed_when: false
+
+- name: Create VOLUME_PREFIX directory
+  file:
+    path: "{{ containers_volume_prefix.stdout }}"
+    state: directory
+    owner: "{{ ansible_user }}"
+    modification_time: preserve
+    access_time: preserve
+  become: true
+
