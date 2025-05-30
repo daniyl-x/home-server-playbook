@@ -140,26 +140,6 @@
         dest: "{{ dotfiles_dir }}"
         version: main
 
-    - name: Enumerate available dotfiles directories
-      find:
-        paths: "{{ dotfiles_dir }}"
-        file_type: directory
-        # This parameter uses globs, not regex
-        excludes: ".*"
-      register: available_dotfiles
-
-    - name: Process available dotfiles names
-      set_fact:
-        available_dotfiles: >
-          {{ available_dotfiles.files | map(attribute="path")
-          | map("basename") }}
-
-    - name: Identify dotfiles to install
-      set_fact:
-        dotfiles: "{{ dotfiles | default([]) + [item] }}"
-      loop: "{{ packages }}"
-      when: item in available_dotfiles
-
     - name: Copy dotfiles to ~/
       copy:
         src: "{{ dotfiles_dir }}/{{ item }}/"

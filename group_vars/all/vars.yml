@@ -13,3 +13,8 @@ packages:
   - tree
   - vim
 
+dotfiles:
+  - sh
+  - bash
+  - vim
+
