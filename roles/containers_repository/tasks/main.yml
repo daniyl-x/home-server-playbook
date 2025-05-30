@@ -1,30 +1,12 @@
 # SPDX-License-Identifier: BSD-2-Clause
-# Copyright (c) 2024, daniyl-x
+# Copyright (c) 2024-2025, daniyl-x
 
 
-- name: Check if containers repo was cloned
-  stat:
-    path: "{{ containers_repo_dir }}/.git"
-  register: containers_clone
-
-- name: Stash changes in containers repo clone
-  command:
-    cmd: git stash
-    chdir: "{{ containers_repo_dir }}"
-  register: containers_stash
-  changed_when: "'WIP' in containers_stash.stdout"
-  when: containers_clone.stat.exists
-
-- name: Get the latest containers repo
+- name: Pull containers repository
   git:
     repo: https://github.com/daniyl-x/containers
     dest: "{{ containers_repo_dir }}"
-
-- name: Apply stashed changes onto containers repo clone
-  command:
-    cmd: git stash pop
-    chdir: "{{ containers_repo_dir }}"
-  when: containers_clone.stat.exists and containers_stash.changed
+    version: main
 
 - name: Get VOLUME_PREFIX from ~/containers/.env
   shell: ". {{ containers_env_file }} && echo $VOLUME_PREFIX"

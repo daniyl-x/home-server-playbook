@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: BSD-2-Clause
-# Copyright (c) 2024, daniyl-x
+# Copyright (c) 2024-2025, daniyl-x
 
 
 - name: Update system and manage packages
@@ -134,10 +134,11 @@
     dotfiles_dir: "{{ ansible_user_dir }}/dotfiles"
 
   pre_tasks:
-    - name: Pull dotfiles
+    - name: Pull dotfiles repository
       git:
         repo: "https://github.com/daniyl-x/dotfiles"
         dest: "{{ dotfiles_dir }}"
+        version: main
 
     - name: Enumerate available dotfiles directories
       find:
