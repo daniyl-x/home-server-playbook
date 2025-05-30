@@ -18,6 +18,7 @@
     path: "{{ containers_volume_prefix.stdout }}"
     state: directory
     owner: "{{ ansible_user }}"
+    group: "{{ ansible_user }}"
     modification_time: preserve
     access_time: preserve
   become: true
