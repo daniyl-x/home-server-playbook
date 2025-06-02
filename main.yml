@@ -118,6 +118,23 @@
         state: present
       when: "'cockpit' in packages and 'podman' in packages"
 
+    - name: Configure Cockpit for reverse proxy
+      blockinfile:
+        path: /etc/cockpit/cockpit.conf
+        create: true
+        block: |
+          [WebService]
+          ProtocolHeader=X-Forwarded-Proto
+          UrlRoot=/cockpit/
+      notify: Restart Cockpit
+      when: "'cockpit' in packages"
+
+  handlers:
+    - name: Restart Cockpit
+      service:
+        name: cockpit
+        state: restarted
+
 
 - name: Install containers repository
   hosts: all
