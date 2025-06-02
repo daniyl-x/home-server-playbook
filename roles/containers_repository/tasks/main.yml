@@ -23,3 +23,9 @@
     access_time: preserve
   become: true
 
+- name: Generate self signed certificate for NGINX
+  shell:
+    cmd: "./../../generate-ssl-cert.sh {{ ansible_hostname }}"
+    chdir: "{{ containers_repo_dir }}/nginx/config/ssl/"
+  changed_when: false
+
