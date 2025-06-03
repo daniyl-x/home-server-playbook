@@ -53,6 +53,16 @@
         create: true
 
   tasks:
+    - name: Explicitly enable key-based SSH authentication
+      replace:
+        path: /etc/ssh/sshd_config
+        regexp: "^({{ item }} (?!yes)|#{{ item }}).*"
+        replace: "{{ item }} yes"
+      loop:
+        - PubkeyAuthentication
+      notify: Restart SSH server
+      become: true
+
     - name: Disable SSH server options
       replace:
         path: /etc/ssh/sshd_config
