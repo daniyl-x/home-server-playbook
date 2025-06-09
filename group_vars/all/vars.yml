@@ -5,7 +5,9 @@ packages:
   - fzf
   - htop
   - iperf3
+  - jq
   - lshw
+  - mkvtoolnix
   - nvme-cli
   - podman
   - smartmontools
