@@ -1,5 +1,6 @@
 packages:
   - bash
+  - borgmatic
   - cockpit
   - curl
   - fzf
